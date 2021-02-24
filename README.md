@@ -1,3 +1,7 @@
+# Basic Weather PWA, built with Vue.js and Materialize CSS
+# Uses Open Weather Map API https://openweathermap.org/api
+# Deployed at https://awesome-poincare-7ac6fe.netlify.app  (free domain)
+
 # weather
 
 ## Project setup
