@@ -7,9 +7,10 @@ export default async function (lon, lat) {
             lat +
             "&lon=" +
             lon +
-            "&exclude=current,minutely,hourly&units=imperial&appid=" +
+            "&exclude=current,minutely&units=imperial&appid=" +
             process.env.VUE_APP_API_KEY
         );
+
         return data
 
     } catch (error) {

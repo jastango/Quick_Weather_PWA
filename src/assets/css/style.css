@@ -1,0 +1,228 @@
+
+/* Global Styles */
+html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+  }
+
+.home {
+    background-attachment: fixed;
+    padding-bottom: 15px;
+  }
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+form {
+    padding-top: 20px;
+}
+
+.card {
+    opacity: 0.9;
+    margin-bottom: 10px !important;
+  }
+
+.feedback {
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: #b71c1c;
+}
+
+.header-title {
+    font-weight: 600 !important;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* Form Input */  
+.make-default {
+    color: #424242 !important;
+    font-weight: 500;
+  }
+  
+.form-group {
+    display: grid;
+    grid-template-columns: 1fr;
+   
+    padding: 0 10px;
+  }
+  
+.input-field label {
+    color: #424242 !important;
+    font-weight: 500;
+  }
+  
+.input-field input[type="text"]:focus + label {
+    color: #424242 !important;
+  }
+  
+.input-field input[type="text"]:focus {
+    border-bottom: 1px solid #4fc3f7 !important;
+    box-shadow: 0 1px 0 0 #4fc3f7 !important;
+  }
+  
+.btn {
+    background-color: #01579b !important;
+    
+  }
+  
+.btn:hover {
+    background-color: #4fc3f7 !important;
+  }
+
+
+  
+.btn-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .make-default-flex {
+      display: flex;
+      align-items: center;
+      padding-bottom: 3px;
+  }
+  
+[type="checkbox"].filled-in:checked + span:not(.lever):after {
+    border: 2px solid #4fc3f7;
+    background-color: #4fc3f7;
+  }
+  
+
+/* Current Weather - 5 Day Weather */
+.city {
+    font-weight: 400 !important;
+  }
+  
+.current-date {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+  
+.current-temp {
+    font-size: 1.8rem;
+    padding: 7px;
+}
+  
+.feels-like {
+    font-size: 1.3rem;
+    border-bottom: 1px solid #f3f3f3;
+    padding-bottom: 7px;
+  }
+  
+.low-temp {
+    font-size: 1.3rem;
+    padding: 5px 0;
+}
+  
+.high-temp {
+    font-size: 1.3rem;
+    border-bottom: 1px solid #f3f3f3;
+    padding-bottom: 7px;
+}
+  
+.chance-wet {
+    font-size: 1.3rem;
+    padding: 7px 0;
+}
+  
+.desc {
+    font-size: 1.2rem;
+}
+
+/* Five Day weather Img */
+
+.forecast-img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+   
+}
+
+
+/* Hourly Weather */
+table td {
+    text-align: center;
+}
+  
+#hour-date-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+  
+#hour-temp-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+#hour-hour {
+    font-size: 14px;
+    font-weight: bold;
+}
+  
+#hour-date {
+    font-size: 11px;
+    color: #444;
+}
+  
+#hour-temp {
+    font-size: 18px;
+}
+  
+#hour-feels-like-group {
+    display: flex;
+    flex-direction: column;
+  
+    color: #777;
+    font-size: 12.5px;
+}
+  
+/* Backgrounds */
+.bg-rain {
+    background: url("../rain.jpg") center center/cover no-repeat;
+    background-attachment: fixed;
+}
+  
+.bg-snow {
+    background: url("../snow.jpg") center center/cover no-repeat;
+    background-attachment: fixed;
+}
+  
+.bg-sunny {
+    background: url("../sunny.jpg") center center/cover no-repeat;
+    background-attachment: fixed;
+}
+  
+.bg-cloudy {
+    background: url("../cloudy.jpg") center center/cover no-repeat;
+    background-attachment: fixed;
+}
+  
+.bg-thunderstorm {
+    background: url("../thunderstorm.jpg") center center/cover no-repeat;
+    background-attachment: fixed;
+}
+  
+.bg-haze {
+    background: url("../haze.jpg") center center/cover no-repeat;
+    background-attachment: fixed;
+}
+  
+.bg-error {
+    background: url("../error.jpg") center center/cover no-repeat;
+    
+}
+  
+.bg-default {
+    background: url("../default.jpg") left bottom/cover no-repeat;
+}
+

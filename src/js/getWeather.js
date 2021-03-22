@@ -20,12 +20,13 @@ export default async function getWeather(query) {
             const daily = await searchByLonLat(lon, lat)
             const weather = {
                 current: current,
-                daily: daily
+                daily: daily,
             }
+
             return weather
 
         } catch (error) {
-
+            console.log(error.message)
         }
     } else {
 

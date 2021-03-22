@@ -1,6 +1,7 @@
 <template>
   <div
     class="home"
+    v-bind:style="{ height: setHeight }"
     v-bind:class="{
       'bg-cloudy': isCloudy,
       'bg-snow': isSnow,
@@ -13,6 +14,7 @@
     }"
   >
     <div class="container">
+      <!-- Search Form -->
       <div class="form-group">
         <form @submit.prevent="searchWeather(query)">
           <div class="input-field">
@@ -20,10 +22,7 @@
             <label for="query">Enter a city or zipcode...</label>
           </div>
           <div class="btn-checkbox-group">
-            <button class="btn waves-effect waves-light" type="submit">
-              Get Weather
-            </button>
-            <p>
+            <span class="make-default-flex">
               <label for="makeDefault">
                 <input
                   v-model="makeDefault"
@@ -33,41 +32,99 @@
                 />
                 <span class="make-default">Make Default?</span>
               </label>
-            </p>
+            </span>
+            <button class="btn waves-effect waves-light" type="submit">
+              Get Weather
+            </button>
           </div>
         </form>
       </div>
-
+      <!-- Main Weather -->
       <div class="card-grid">
-        <div class="container">
-          <div v-if="feedback" class="card feedback">
-            <div class="card-content">
-              <p class="feedback">{{ feedback }}</p>
-            </div>
+        <div v-if="feedback" class="card feedback">
+          <div class="card-content">
+            <p class="feedback">{{ feedback }}</p>
           </div>
-          <div v-if="weather.city" class="card">
-            <div class="card-content center-align">
-              <p v-if="feedback" class="feedback">{{ feedback }}</p>
-              <span class="card-title city">{{ weather.city }}</span>
-              <p class="current-temp">
-                {{ weather.temp }} <span class="deg-far">&#8457;</span>
-              </p>
-              <p class="feels-like">
-                Feels like {{ weather.feels }}
-                <span class="deg-far">&#8457;</span>
-              </p>
-              <p class="low-temp">
-                Low: {{ weather.tempLow }} <span class="deg-far">&#8457;</span>
-              </p>
-              <p class="high-temp">
-                High: {{ weather.tempHigh }}
-                <span class="deg-far">&#8457;</span>
-              </p>
-              <p class="chance-wet">
-                Chance of Precipitation: {{ weather.chanceWet }}%
-              </p>
-              <p class="desc">{{ weather.desc }}</p>
+        </div>
+        <div v-if="weather.city" class="card" id="current-weather">
+          <div class="card-content center-align">
+            <p class="current-date">{{ this.weather.date }}</p>
+            <span class="card-title city">{{ weather.city }}</span>
+            <p class="current-temp">{{ weather.temp }} <span>&#8457;</span></p>
+            <p class="feels-like">
+              Feels like {{ weather.feels }} <span>&#8457;</span>
+            </p>
+            <p class="low-temp">
+              Low: {{ weather.tempLow }} <span>&#8457;</span>
+            </p>
+            <p class="high-temp">
+              High: {{ weather.tempHigh }} <span>&#8457;</span>
+            </p>
+            <p class="chance-wet">
+              Chance of Precipitation: {{ weather.chanceWet }}%
+            </p>
+            <p class="desc">{{ weather.desc }}</p>
+          </div>
+        </div>
+      </div>
+      <!-- Hourly/ Daily Weather Components -->
+      <div v-if="weather.hours[0]" class="card">
+        <div class="card-title header-title">
+          <span>Hourly</span>
+        </div>
+        <table class="striped center">
+          <tbody>
+            <tr v-for="(hour, index) in weather.hours" :key="index">
+              <td>
+                <span id="hour-date-group">
+                  <span id="hour-hour">{{ hour.hour }}</span>
+                  <span id="hour-date">{{ hour.date }}</span>
+                </span>
+              </td>
+              <td id="hour-temp">
+                {{ Math.round(hour.temp) }}<span>&#8457;</span>
+              </td>
+              <td id="hour-feels-like">
+                <span id="hour-feels-like-group">
+                  <span id="hour-feels-like-text">Feels</span>
+                  <span>
+                    {{ Math.round(hour.feels_like) }}<span>&#8457;</span>
+                  </span>
+                </span>
+              </td>
+              <td id="hour-desc">
+                {{ hour.weather[0].description }}
+              </td>
+              <td id="hour-chance-wet">{{ Math.round(hour.pop) * 100 }}%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- 5 day forecast -->
+      <div v-if="weather.forecast[0]">
+        <div class="card">
+          <div class="card-title header-title">
+            <span>5-Day Forecast</span>
+          </div>
+        </div>
+        <div v-for="(day, index) in weather.forecast" :key="index" class="card">
+          <div class="card-content center-align">
+            <p class="current-date">{{ day.date }}</p>
+            <div class="center mt-10">
+              <img class="forecast-img" :src="`/img/${day.img}`" alt="" />
             </div>
+            <p class="low-temp">
+              Low: {{ Math.round(day.temp.min) }}
+              <span>&#8457;</span>
+            </p>
+            <p class="high-temp">
+              High: {{ Math.round(day.temp.max) }}
+              <span>&#8457;</span>
+            </p>
+            <p class="chance-wet">
+              Chance of Precipitation: {{ Math.round(day.pop) * 100 }}%
+            </p>
+            <p class="desc">{{ day.weather[0].description }}</p>
           </div>
         </div>
       </div>
@@ -79,14 +136,15 @@
 import getWeather from "../js/getWeather";
 import "../css-materialize/materialize.js";
 import "../css-materialize/materialize.min.css";
+import "../assets/css/style.css";
+import dayjs from "dayjs";
 export default {
   name: "Home",
   data() {
     return {
       query: "",
-      lon: "",
-      lat: "",
       feedback: "",
+      setHeight: "100vh",
       makeDefault: false,
       weather: {
         city: "",
@@ -97,6 +155,9 @@ export default {
         tempLow: "",
         tempHigh: "",
         chanceWet: "",
+        hours: [],
+        forecast: [],
+        date: "",
       },
       isCloudy: false,
       isSnow: false,
@@ -130,6 +191,9 @@ export default {
       this.weather.tempHigh = "";
       this.weather.chanceWet = "";
       this.weather.desc = "";
+      this.weather.hours = [];
+      this.weather.date = "";
+      this.weather.forecast = [];
     },
     setBackground(type) {
       if (type === "clouds") {
@@ -147,18 +211,76 @@ export default {
       }
     },
     setData(result) {
+      // Reset hours/forecast arrays to prevent pushing multiple searches
+      this.weather.hours = [];
+      this.weather.forecast = [];
+      // Set Current Weather
       this.weather.city = result.current.data.name;
       this.weather.temp = Math.round(result.current.data.main.temp);
       this.weather.type = result.current.data.weather[0].main.toLowerCase();
       this.weather.desc = result.current.data.weather[0].description;
       this.weather.feels = Math.round(result.current.data.main.feels_like);
-      this.weather.tempLow = Math.round(result.current.data.main.temp_min);
-      this.weather.tempHigh = Math.round(result.current.data.main.temp_max);
+      this.weather.tempLow = Math.round(result.daily.data.daily[0].temp.min);
+      this.weather.tempHigh = Math.round(result.daily.data.daily[0].temp.max);
       this.weather.chanceWet = result.daily.data.daily[0].pop * 100;
+
+      // Current Weather Date
+      this.weather.date = dayjs
+        .unix(result.current.data.dt)
+        .format("dddd, MMM D, YYYY");
+
+      // Get 12 hours
+      for (let i = 0; i < 12; i++) {
+        this.weather.hours.push(result.daily.data.hourly[i]);
+      }
+      // Get Date/Hour for Hourly
+      for (let i = 0; i < 12; i++) {
+        this.weather.hours[i].date = dayjs
+          .unix(this.weather.hours[i].dt)
+          .format("M/D");
+
+        this.weather.hours[i].hour = dayjs
+          .unix(this.weather.hours[i].dt)
+          .format("h A");
+      }
+
+      // Get 5 Days
+      for (let i = 0; i < 6; i++) {
+        this.weather.forecast.push(result.daily.data.daily[i]);
+
+        // Get Forecast Date
+        this.weather.forecast[i].date = dayjs
+          .unix(result.daily.data.daily[i].dt)
+          .format("dddd, MMM D, YYYY");
+      }
+
+      // Remove Today, start on Tomorrow
+      this.weather.forecast.splice(0, 1);
+
+      // Set 5 Day Images
+      for (let i = 0; i < this.weather.forecast.length; i++) {
+        let type = this.weather.forecast[i].weather[0].main.toLowerCase();
+
+        if (type === "clouds") {
+          this.weather.forecast[i].img = "cloudy.jpg";
+        } else if (type === "snow") {
+          this.weather.forecast[i].img = "snow.jpg";
+        } else if (type === "rain" || type === "mist") {
+          this.weather.forecast[i].img = "rain.jpg";
+        } else if (type === "clear") {
+          this.weather.forecast[i].img = "sunny.jpg";
+        } else if (type === "thunderstorm") {
+          this.weather.forecast[i].img = "thunderstorm.jpg";
+        } else if (type === "haze") {
+          this.weather.forecast[i].img = "haze.jpg";
+        }
+      }
     },
+    // Get Weather Button Method
     async searchWeather(query) {
       try {
         const result = await getWeather(query);
+        this.setHeight = "100%";
         this.resetFields();
         this.setData(result);
         this.setBackground(this.weather.type);
@@ -167,6 +289,8 @@ export default {
           this.makeDefault = false;
         }
       } catch (error) {
+        console.log(error.message);
+        this.setHeight = "100vh";
         this.value = "";
         this.clearWeather();
         this.isError = true;
@@ -175,15 +299,18 @@ export default {
       }
     },
   },
+  // Check if Default City is saved in Local Storage
   async beforeMount() {
     try {
       if (localStorage.defaultCity) {
         const result = await getWeather(localStorage.defaultCity);
+        this.setHeight = "100%";
         this.resetFields();
         this.setData(result);
         this.setBackground(this.weather.type);
       }
     } catch (error) {
+      this.setHeight = "100vh";
       this.value = "";
       console.log(error.message);
     }
@@ -192,138 +319,4 @@ export default {
 </script>
 
 <style>
-html {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.home {
-  height: 100vh;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.card {
-  opacity: 0.9;
-}
-
-.feedback {
-  font-size: 1.3rem;
-  font-weight: 400;
-  color: #b71c1c;
-}
-.city {
-  font-weight: 400 !important;
-}
-.current-temp {
-  font-size: 1.8rem;
-  padding: 7px;
-}
-
-.feels-like {
-  font-size: 1.3rem;
-  border-bottom: 1px solid #f3f3f3;
-  padding-bottom: 7px;
-}
-
-.low-temp {
-  font-size: 1.3rem;
-  padding: 5px 0;
-}
-
-.high-temp {
-  font-size: 1.3rem;
-  border-bottom: 1px solid #f3f3f3;
-  padding-bottom: 7px;
-}
-
-.chance-wet {
-  font-size: 1.3rem;
-  padding: 7px 0;
-}
-
-.desc {
-  font-size: 1.2rem;
-}
-
-.make-default {
-  color: #424242 !important;
-  font-weight: 500;
-}
-
-.form-group {
-  display: grid;
-  grid-template-columns: 1fr;
-  margin-top: 25px;
-  padding: 0 10px;
-}
-
-.input-field label {
-  color: #424242 !important;
-  font-weight: 500;
-}
-
-.input-field input[type="text"]:focus + label {
-  color: #424242 !important;
-}
-
-.input-field input[type="text"]:focus {
-  border-bottom: 1px solid #4fc3f7 !important;
-  box-shadow: 0 1px 0 0 #4fc3f7 !important;
-}
-
-.btn {
-  background-color: #01579b !important;
-}
-
-.btn:hover {
-  background-color: #4fc3f7 !important;
-}
-
-.btn-checkbox-group {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-[type="checkbox"].filled-in:checked + span:not(.lever):after {
-  border: 2px solid #4fc3f7;
-  background-color: #4fc3f7;
-}
-
-.bg-rain {
-  background: url("../assets/rain.jpg") center center/cover no-repeat;
-}
-
-.bg-snow {
-  background: url("../assets/snow.jpg") center center/cover no-repeat;
-}
-
-.bg-sunny {
-  background: url("../assets/sunny.jpg") center center/cover no-repeat;
-}
-
-.bg-cloudy {
-  background: url("../assets/cloudy.jpg") center center/cover no-repeat;
-}
-
-.bg-thunderstorm {
-  background: url("../assets/thunderstorm.jpg") center center/cover no-repeat;
-}
-
-.bg-haze {
-  background: url("../assets/haze.jpg") center center/cover no-repeat;
-}
-
-.bg-error {
-  background: url("../assets/error.jpg") center center/cover no-repeat;
-}
-
-.bg-default {
-  background: url("../assets/default.jpg") center center/cover no-repeat;
-}
 </style>

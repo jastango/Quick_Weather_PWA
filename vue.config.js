@@ -5,5 +5,7 @@ module.exports = {
             navigateFallback: '/index.html',
 
         }
-    }
+    },
+
+    filenameHashing: false
 }
