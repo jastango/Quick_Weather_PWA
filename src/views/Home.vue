@@ -95,7 +95,7 @@
               <td id="hour-desc">
                 {{ hour.weather[0].description }}
               </td>
-              <td id="hour-chance-wet">{{ Math.round(hour.pop) * 100 }}%</td>
+              <td id="hour-chance-wet">{{ hour.pop * 100 }}%</td>
             </tr>
           </tbody>
         </table>
@@ -122,7 +122,7 @@
               <span>&#8457;</span>
             </p>
             <p class="chance-wet">
-              Chance of Precipitation: {{ Math.round(day.pop) * 100 }}%
+              Chance of Precipitation: {{ day.pop * 100 }}%
             </p>
             <p class="desc">{{ day.weather[0].description }}</p>
           </div>
@@ -284,6 +284,7 @@ export default {
         this.resetFields();
         this.setData(result);
         this.setBackground(this.weather.type);
+        console.log(result);
         if (this.makeDefault) {
           localStorage.defaultCity = result.current.data.name;
           this.makeDefault = false;
